@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Pengguna</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+    
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: linear-gradient(145deg, #ffffff, #f1f3f9);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+    
+        h1 {
+            text-align: center;
+            color: #007aff;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+    
+        thead {
+            background: linear-gradient(90deg, #007aff, #4b9cfc);
+            color: #fff;
+            text-transform: uppercase;
+        }
+    
+        th, td {
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+    
+        th {
+            font-weight: 600;
+        }
+    
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+    
+        tbody tr:nth-child(even) {
+            background-color: #fdfdfd;
+        }
+    
+        tbody tr:hover {
+            background-color: #e8f0fe;
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+    
+        /* Button Styles */
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+    
+        .btn.delete {
+            background: #ff4d4d;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(255, 77, 77, 0.3);
+        }
+    
+        .btn.delete:hover {
+            background: #e63939;
+            box-shadow: 0 6px 10px rgba(255, 77, 77, 0.5);
+        }
+    
+        .btn.purchase {
+            background: #34c759;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(52, 199, 89, 0.3);
+        }
+    
+        .btn.purchase:hover {
+            background: #2ca94c;
+            box-shadow: 0 6px 10px rgba(52, 199, 89, 0.5);
+        }
+    
+        /* Back Button */
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: linear-gradient(90deg, #007aff, #005ecb);
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 122, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+    
+        .back-btn:hover {
+            background: linear-gradient(90deg, #005ecb, #003e8d);
+            box-shadow: 0 6px 12px rgba(0, 122, 255, 0.5);
+        }
+    
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back{
+            margin-left: 10px;
+            margin-top: -30px;
+            font-size: 20px;
+            background-color: #07e000;
+            width: 185px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            cursor: pointer;
+            position: fixed;
+            z-index: 33;
+            a{
+                text-decoration: none;
+            }
+        }
+
+        .back i{
+            padding: 10px;
+        }
+
+
+    </style>
+    
+</head>
+
+<body>
+    <header class="back">
+        <a th:href="@{/menu-user}" class="nav-link">
+            <i class="fas fa-sign-out-alt"></i> Back To Home
+        </a>
+    </nav>
+</header>
+
+    <div class="container">
+        <h1>History Pemesanan</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Barang</th>
+                    <th>Harga</th>
+                    <th>Quantity</th>
+                    <th>Total Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="x ,stat: ${his}">
+                    <td th:text="${stat.index + 1}">No</td>
+                    <td th:text="${x.product.nameProduct}"></td>
+                    <td th:text="${'Rp'+ x.product.harga + ',00'}"></td>
+                    <td th:text="${x.jumlah}"></td>
+                    <td th:text="${'Rp' + x.jumlah * x.product.harga + ',00'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Delete User Function
+        function deleteUser(userId) {
+            const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus pengguna dengan ID ${userId}?`);
+            if (confirmDelete) {
+                alert(`Pengguna dengan ID ${userId} telah dihapus.`);
+                // Logika backend untuk delete di sini
+            }
+        }
+
+        // Purchase Function
+        function purchase(userId) {
+            alert(`Menampilkan daftar pembelian untuk pengguna dengan ID ${userId}.`);
+            // Logika untuk menampilkan detail pembelian di sini
+        }
+    </script>
+</body>
+
+</html>

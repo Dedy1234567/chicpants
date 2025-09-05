@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Cart - ChicPants</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        /* Header Navigation */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 16px 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: #667eea;
+            font-size: 28px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: 16px;
+        }
+
+        /* Cart Container */
+        .cart-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            color: #cbd5e0;
+            margin-bottom: 24px;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 12px;
+        }
+
+        .empty-message {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .shop-now-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .shop-now-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Cart Items */
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 24px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .item-checkbox {
+            margin-right: 20px;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 24px;
+            width: 24px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .custom-checkbox .checkmark:after {
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .product-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-right: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .product-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .product-size {
+            font-size: 14px;
+            color: #718096;
+            background: #f7fafc;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .delete-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #feb2b2, #fecaca);
+            color: #991b1b;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: 1px solid #fca5a5;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #fca5a5, #feb2b2);
+            transform: translateY(-1px);
+        }
+
+        /* Checkout Section */
+        .checkout-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .selection-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .selected-count {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .select-all {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .select-all:hover {
+            color: #764ba2;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .checkout-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .checkout-btn:disabled {
+            background: #cbd5e0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+
+            .cart-container {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 20px;
+            }
+
+            .item-checkbox {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                margin: 0;
+            }
+
+            .product-img {
+                width: 100%;
+                height: 200px;
+                margin-right: 0;
+                margin-bottom: 12px;
+            }
+
+            .product-details {
+                width: 100%;
+            }
+
+            .item-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .nav-container {
+                padding: 0 8px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .back-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 12px 16px;
+            }
+
+            .cart-container {
+                margin: 0 8px;
+            }
+
+            .empty-state {
+                padding: 60px 20px;
+            }
+
+            .empty-icon {
+                font-size: 60px;
+            }
+
+            .selection-info {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+
+        /* Animation for adding items */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cart-item {
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        /* Loading state */
+        .checkout-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .checkout-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                ChicPants
+            </a>
+            <a th:href="@{/menu-user}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Shop
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">Shopping Cart</h1>
+            <p class="page-subtitle">Review your items and proceed to checkout</p>
+        </div>
+
+        <div class="cart-container">
+            <!-- Empty State -->
+            <div th:if="${isEmpty}" class="empty-state">
+                <i class="fas fa-shopping-cart empty-icon"></i>
+                <h2 class="empty-title">Your cart is empty</h2>
+                <p class="empty-message">Start shopping to add items to your cart</p>
+                <a th:href="@{/menu-user}" class="shop-now-btn">
+                    <i class="fas fa-shopping-bag"></i>
+                    Start Shopping
+                </a>
+            </div>
+
+            <!-- Cart Items -->
+            <div th:if="${!isEmpty}">
+                <!-- Selection Info -->
+                <div class="selection-info">
+                    <span class="selected-count" id="selected-count">0 items selected</span>
+                    <div class="select-all" onclick="toggleSelectAll()">
+                        <i class="fas fa-check-square"></i>
+                        <span id="select-all-text">Select All</span>
+                    </div>
+                </div>
+
+                <!-- Items List -->
+                <div class="cart-items">
+                    <div class="cart-item" th:each="item : ${cart}">
+                        <div class="item-checkbox">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" name="pilihan" class="pilihan-checkbox" th:value="${item.product.id}" />
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        
+                        <img th:src="@{${item.product.gambar}}" alt="Product" class="product-img" />
+                        
+                        <div class="product-details">
+                            <h3 class="product-name" th:text="${item.product.nameProduct}">Product Name</h3>
+                            <p class="product-price" th:text="'Rp' + ${#numbers.formatDecimal(item.product.harga, 0, 'COMMA', 0, 'POINT')}">Rp 0</p>
+                            <span class="product-size" th:text="'Size: ' + ${item.product.size}">Size: M</span>
+                        </div>
+                        
+                        <div class="item-actions">
+                            <a th:href="@{/delete-dikeranjang/{id}(id=${item.id})}" class="delete-btn">
+                                <i class="fas fa-trash-alt"></i>
+                                Remove
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkout Section -->
+                <div class="checkout-section">
+                    <button class="checkout-btn" id="checkout-btn" disabled>
+                        <i class="fas fa-credit-card"></i>
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCheckboxes = [];
+        let selectAllState = false;
+
+        function initializeCheckboxes() {
+            allCheckboxes = document.querySelectorAll('.pilihan-checkbox');
+            updateUI();
+            
+            allCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateUI);
+            });
+        }
+
+        function updateUI() {
+            const checkedBoxes = document.querySelectorAll('.pilihan-checkbox:checked');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const selectedCount = document.getElementById('selected-count');
+            const selectAllText = document.getElementById('select-all-text');
+            
+            // Update selected count
+            const count = checkedBoxes.length;
+            selectedCount.textContent = `${count} item${count !== 1 ? 's' : ''} selected`;
+            
+            // Update checkout button
+            checkoutBtn.disabled = count === 0;
+            
+            // Update select all text
+            if (count === 0) {
+                selectAllText.textContent = 'Select All';
+                selectAllState = false;
+            } else if (count === allCheckboxes.length) {
+                selectAllText.textContent = 'Deselect All';
+                selectAllState = true;
+            } else {
+                selectAllText.textContent = 'Select All';
+                selectAllState = false;
+            }
+        }
+
+        function toggleSelectAll() {
+            const newState = !selectAllState;
+            allCheckboxes.forEach(checkbox => {
+                checkbox.checked = newState;
+            });
+            updateUI();
+        }
+
+        function handleCheckout() {
+            const selectedItems = Array.from(document.querySelectorAll('.pilihan-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+
+            if (selectedItems.length > 0) {
+                const checkoutBtn = document.getElementById('checkout-btn');
+                checkoutBtn.classList.add('loading');
+                checkoutBtn.disabled = true;
+                
+                // Simulate loading for better UX
+                setTimeout(() => {
+                    const url = `/check-out?items=${selectedItems.join(',')}`;
+                    window.location.href = url;
+                }, 500);
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCheckboxes();
+            
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', handleCheckout);
+            }
+        });
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading state to back button
+        document.querySelector('.back-btn')?.addEventListener('click', function(e) {
+            this.style.opacity = '0.7';
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        });
+    </script>   
+</body>
+
+</html>

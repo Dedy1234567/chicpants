@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Profile - MyStore</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .floating-shapes:nth-child(1) { 
+            width: 100px; height: 100px; 
+            top: 10%; left: 15%; 
+            animation-delay: 0s; 
+        }
+        .floating-shapes:nth-child(2) { 
+            width: 150px; height: 150px; 
+            top: 70%; left: 80%; 
+            animation-delay: 2s; 
+        }
+        .floating-shapes:nth-child(3) { 
+            width: 80px; height: 80px; 
+            top: 30%; left: 70%; 
+            animation-delay: 4s; 
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+                opacity: 0.7;
+            }
+            50% { 
+                transform: translateY(-20px) translateX(10px) rotate(180deg); 
+                opacity: 1;
+            }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 184, 148, 0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Profile Header Card */
+        .profile-header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-avatar {
+            position: relative;
+            z-index: 2;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.5);
+            margin: 0 auto 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            position: relative;
+            z-index: 2;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-email {
+            position: relative;
+            z-index: 2;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+        }
+
+        .profile-balance {
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: white;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        /* History Table */
+        .history-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .history-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .history-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .history-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(0, 184, 148, 0.2);
+            border: 1px solid rgba(0, 184, 148, 0.5);
+            color: #00b894;
+        }
+
+        .message.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .profile-stats {
+                gap: 1.5rem;
+                flex-wrap: wrap;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .profile-header {
+                padding: 2rem 1rem;
+            }
+
+            .profile-name {
+                font-size: 2rem;
+            }
+
+            .history-table {
+                font-size: 0.875rem;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-shapes"></div>
+        <div class="floating-shapes"></div>
+        <div class="floating-shapes"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/menu-user" class="nav-brand">
+                <i class="fas fa-store"></i> MyStore
+            </a>
+            <a th:href="@{/menu-user}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Store
+            </a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="message success" th:text="${success}"></div>
+        <div th:if="${error}" class="message error" th:text="${error}"></div>
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profile Image">
+            </div>
+            <div class="profile-name" th:text="${profile != null ? profile.user.username : 'Guest User'}">John Doe</div>
+            <div class="profile-email" th:text="${profile != null ? profile.user.email : 'guest@example.com'}">john@example.com</div>
+            <div class="profile-balance">
+                <i class="fas fa-wallet"></i> 
+                Saldo: Rp <span th:text="${profile != null && profile.user.saldo != null ? #numbers.formatDecimal(profile.user.saldo, 0, 0) : '0'}">100,000</span>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-number" th:text="${#lists.size(his) ?: 0}">5</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" th:text="${totalSpent ?: 'Rp 0'}">Rp 250,000</div>
+                    <div class="stat-label">Total Spent</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">⭐ 4.8</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Profile Cards -->
+        <div class="cards-grid">
+            <!-- Update Profile Info Card -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    Update Profile Information
+                </div>
+                <form th:action="@{/profile/update}" method="post">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" name="username" 
+                               th:value="${profile != null ? profile.user.username : ''}" 
+                               placeholder="Enter new username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" 
+                               th:value="${profile != null ? profile.user.email : ''}" 
+                               placeholder="Enter new email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Saldo</label>
+                        <input type="number" class="form-control" name="saldo" 
+                               th:value="${profile != null && profile.user.saldo != null ? profile.user.saldo : 0}" 
+                               placeholder="Enter balance amount" step="0.01" min="0">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Profile
+                    </button>
+                </form>
+            </div>
+
+            <!-- Change Password Card -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    Change Password
+                </div>
+                <form th:action="@{/profile/change-password}" method="post">
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-control" name="currentPassword" 
+                               placeholder="Enter current password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control" name="newPassword" 
+                               placeholder="Enter new password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" name="confirmPassword" 
+                               placeholder="Confirm new password" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-lock"></i> Change Password
+                    </button>
+                </form>
+            </div>
+
+            <!-- Reset Password via Email Card -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    Reset Password via Email
+                </div>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; line-height: 1.6;">
+                    Jika kamu lupa password, silakan gunakan fitur <b>reset password</b> ya 😊. 
+                    Mohon maaf, untuk saat ini link yang kami kirim lewat email hanya bisa dibuka melalui <b>PC</b>. 
+                    Di perangkat <b>HP</b> belum bisa karena keterbatasan alamat IP. Terima kasih atas pengertiannya!
+                </p>
+                
+                <form th:action="@{/profile/request-password-reset}" method="post">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" name="email" 
+                               th:value="${profile != null ? profile.user.email : ''}" 
+                               placeholder="Enter your email address" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Reset Email
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Order History -->
+        <div class="history-container">
+            <div class="history-header">
+                <h2 class="history-title">
+                    <i class="fas fa-history"></i>
+                    Order History
+                </h2>
+            </div>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order, stat : ${his}">
+                        <td th:text="${stat.index + 1}">1</td>
+                        <td th:text="${order.product != null ? order.product.nameProduct : 'N/A'}">Product Name</td>
+                        <td th:text="${order.product != null ? ('Rp ' + #numbers.formatDecimal(order.product.harga, 0, 0) + ',00') : 'N/A'}">Rp 50,000</td>
+                        <td th:text="${order.jumlah}">2</td>
+                        <td th:text="${order.product != null ? ('Rp ' + #numbers.formatDecimal(order.jumlah * order.product.harga, 0, 0) + ',00') : 'N/A'}">Rp 100,000</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(his)}">
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.6);">
+                            <i class="fas fa-shopping-cart" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                            No order history found
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Form validation
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const passwordForm = form.querySelector('input[name="newPassword"]');
+                if (passwordForm) {
+                    const newPassword = passwordForm.value;
+                    const confirmPassword = form.querySelector('input[name="confirmPassword"]').value;
+                    
+                    if (newPassword !== confirmPassword) {
+                        e.preventDefault();
+                        alert('New passwords do not match!');
+                        return;
+                    }
+                    
+                    if (newPassword.length < 6) {
+                        e.preventDefault();
+                        alert('Password must be at least 6 characters long!');
+                        return;
+                    }
+                }
+
+                // Email validation
+                const emailInput = form.querySelector('input[type="email"]');
+                if (emailInput) {
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(emailInput.value)) {
+                        e.preventDefault();
+                        alert('Please enter a valid email address!');
+                        return;
+                    }
+                }
+            });
+        });
+
+        // Auto hide messages after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-20px)';
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 5000);
+    </script>
+</body>
+
+</html>

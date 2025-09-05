@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Users</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        display: flex;
+      }
+      /* Sidebar */
+      .sidebar {
+        width: 240px;
+        background: #2c3e50;
+        color: white;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: 0;
+        top: 0;
+      }
+      .sidebar h2 {
+        padding: 20px;
+        text-align: center;
+        background: #1a252f;
+        margin: 0;
+        font-size: 20px;
+      }
+      .sidebar a,
+      .sidebar button {
+        padding: 15px 20px;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        text-align: left;
+        font-size: 15px;
+        transition: background 0.3s;
+      }
+      .sidebar a:hover,
+      .sidebar button:hover {
+        background: #34495e;
+      }
+      /* Main Content */
+      .main-content {
+        margin-left: 240px;
+        padding: 20px;
+        flex: 1;
+      }
+      .main-content h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      /* Flash alerts */
+      .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      }
+      .alert-success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #bbf7d0;
+      }
+      .alert-error {
+        background: #fff1f2;
+        color: #9f1239;
+        border: 1px solid #fecaca;
+      }
+
+      /* Search Bar */
+      .search-bar {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+      }
+      .search-bar input {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        flex: 1;
+      }
+      .search-bar button {
+        padding: 10px 15px;
+        background: #3498db;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .search-bar button:hover {
+        background: #2980b9;
+      }
+
+      /* Table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      th {
+        background: #2c3e50;
+        color: white;
+      }
+      tr:hover {
+        background: #f9f9f9;
+      }
+      .delete-btn {
+        background: #e74c3c;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .delete-btn:hover {
+        background: #c0392b;
+      }
+
+      /* Pagination */
+      .pagination {
+        margin-top: 20px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .pagination a {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #2c3e50;
+        background: white;
+      }
+      .pagination a:hover {
+        background: #f0f0f0;
+      }
+      .pagination .active-page {
+        background: #3498db;
+        color: white;
+        font-weight: bold;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar { width: 200px; }
+        .main-content { margin-left: 200px; }
+      }
+      @media (max-width: 576px) {
+        .sidebar { position: absolute; left: -240px; transition: left 0.3s; }
+        .sidebar.active { left: 0; }
+        .main-content { margin-left: 0; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2><i class="fas fa-crown"></i> Admin Chic</h2>
+      <a th:href="@{/menu-admin}"><i class="fas fa-home"></i> Beranda</a>
+      <a th:href="@{/manage-user}" class="active"
+        ><i class="fas fa-users"></i> Manage Users</a
+      >
+      <a th:href="@{/manage-product}"><i class="fas fa-plus-circle"></i> Product</a>
+      <form th:action="@{/logout}" method="post" style="margin-top: auto">
+        <button><i class="fas fa-sign-out-alt"></i> Log out</button>
+      </form>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h1>Manage Users</h1>
+
+      <!-- FLASH ALERTS -->
+      <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+      <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+      <!-- Search Bar -->
+      <form class="search-bar" th:action="@{/manage-user}" method="get">
+        <input
+          type="text"
+          name="search"
+          placeholder="Search user..."
+          th:value="${search}"
+        />
+        <button type="submit"><i class="fas fa-search"></i> Search</button>
+      </form>
+
+      <!-- User Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.roles[0].name}"></td>
+            <td>
+              <!-- Delete button hanya jika bukan admin -->
+              <a
+                th:if="${#lists.isEmpty(user.roles.?[name == 'ROLE_ADMIN'])}"
+                th:href="@{/delete-user/{id}(id=${user.id})}"
+                th:attr="onclick=|return confirm('Yakin menghapus user ${user.username}?');|"
+              >
+                <button class="delete-btn">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </a>
+              <span
+                th:if="${!#lists.isEmpty(user.roles.?[name == 'ROLE_ADMIN'])}"
+                style="color:gray"
+              >
+                <i class="fas fa-lock"></i> Protected
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="pagination" th:if="${totalPages > 1}">
+        <a th:if="${currentPage > 0}"
+           th:href="@{/manage-user(page=${currentPage - 1}, search=${search})}">
+          &laquo; Prev
+        </a>
+
+        <span th:each="i : ${#numbers.sequence(0, totalPages-1)}">
+          <a th:href="@{/manage-user(page=${i}, search=${search})}"
+             th:text="${i + 1}"
+             th:classappend="${i == currentPage} ? 'active-page' : ''">
+          </a>
+        </span>
+
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/manage-user(page=${currentPage + 1}, search=${search})}">
+          Next &raquo;
+        </a>
+      </div>
+    </div>
+
+    <!-- Script alert auto-hide -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const err = document.querySelector('.alert-error');
+        if (err && err.textContent.trim().length > 0) {
+          alert(err.textContent.trim());
+          setTimeout(() => { err.style.display = 'none'; }, 6000);
+        }
+        const succ = document.querySelector('.alert-success');
+        if (succ && succ.textContent.trim().length > 0) {
+          setTimeout(() => { succ.style.display = 'none'; }, 5000);
+        }
+      });
+    </script>
+  </body>
+</html>

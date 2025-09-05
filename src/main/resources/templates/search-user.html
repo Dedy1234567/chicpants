@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cari Produk</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #e6f7ff, #ffffff);
+            color: #333;
+        }
+
+        /* Header */
+        .main-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-search {
+            display: flex;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .search-bar {
+            width: 90%;
+            max-width: 400px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-bar:focus {
+            border-color: #005ecb;
+            outline: none;
+        }
+
+        .search-icon {
+            width: 25px;
+            background: rgba(0, 0, 0, 0.6);
+            height: 25px;
+            position: absolute;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffdd57;
+        }
+
+        /* Product Section */
+        .content {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #007aff;
+        }
+
+        .product-card .category {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .product-card a {
+            flex: 1;
+            text-decoration: none;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .edit-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #43a047;
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            background: #e53935;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #007aff;
+            color: white;
+            margin-top: 40px;
+            font-size: 14px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 15px;
+            }
+
+            .product-card {
+                width: 90%;
+            }
+        }
+        .search-icon {
+    position: absolute;
+    right: 10px; /* Tempatkan di ujung kanan */
+    top: 53%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 48.5%;
+
+}
+
+.search-icon i {
+    margin: 0;
+}
+
+.search-icon:hover {
+    color: #ffdd57; /* Efek hover pada ikon */
+}
+    </style>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-store"></i> ChicPants
+        </div>
+        <div class="nav-search">
+            <form th:action="@{/search-user}">
+                <input type="text" class="search-bar" name="search-user" placeholder="Search...">
+                <button type="submit" class="search-icon">
+                    <i class="fas fa-search"
+                        style="font-size: 16px; color: #ffffff; margin-top: -9px; margin-left: -7px; position: absolute;"></i>
+                </button>
+            </form>
+        </div>
+        <nav class="nav-links">
+            <a th:href="@{/menu-user}" class="nav-link">
+                <i class="fas fa-home"></i> Beranda
+            </a>
+            <a th:href="@{/cart}" class="nav-link">
+                <i class="fas fa-shopping-cart"></i> Keranjang
+            </a>
+            <a th:href="@{/profile}" class="nav-link">
+                <i class="fas fa-user"></i> Akun Saya
+            </a>
+            <a th:href="@{/home}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="product-card" th:each="data : ${products}">
+            <img th:src="${data.gambar}" alt="Produk">
+            <h3 th:text="${data.nameProduct}"></h3>
+            <p class="category" th:text="${data.category}"></p>
+            <p th:text="'Rp :' + ${data.harga}"></p>
+            <p th:text="'Stok :' + ${data.stok}"></p>
+            <p th:text="'Size :' + ${data.size}"></p>
+            <div class="button-group">
+                <a th:href="@{/check-out-one/{id} (id=${data.id})}" class="edit-btn">
+                    <i class="fas fa-shopping-bag"></i> Checkout
+                </a>
+                <a th:href="@{/keranjang/{id} (id=${data.id})}" class="delete-btn">
+                    <i class="fas fa-cart-plus"></i> Keranjang
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        &copy; 2024 ChicPants. Semua Hak Dilindungi.
+    </footer>
+</body>
+
+</html>

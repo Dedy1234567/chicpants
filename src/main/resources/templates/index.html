@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(45deg, #FF6B6B, #FFD93D, #6BFF6B, #36F1CD, #6C63FF);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite; /* Background gradient animation */
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1;
+            position: relative;
+        }
+
+        .container:hover {
+            transform: scale(1.05);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-out;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #6c63ff;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            margin: 15px;
+            display: inline-block;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        a:hover {
+            background-color: #5345b6;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        a:active {
+            transform: translateY(2px);
+        }
+
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Background Gradient Animation */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Add Styles for the "Find Your Style" Text outside the container */
+        .subtext {
+            font-size: 2.5em; /* Bigger font size */
+            color: #fff;
+            margin-top: 30px;
+            text-align: center;
+            font-weight: normal;
+            text-transform: none;
+            animation: fadeIn 2s ease-out 1s; /* Added delay for smooth appearance */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .container {
+                padding: 20px;
+                width: 90%;
+            }
+            a {
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+            .subtext {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to ChicPants</h1>
+        <a th:href="@{/signin}">Sign In</a>
+        <a th:href="@{/signup}">Register</a>
+    </div>
+    <div class="subtext">
+        Temukan gaya anda di Chic Pants Store
+    </div>
+</body>
+
+</html>

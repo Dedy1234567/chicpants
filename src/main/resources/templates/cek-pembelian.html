@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>
+            Pembelian User
+        </title>
+        <style>
+                    body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #eef2f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background-color: #007aff;
+            color: #ffffff;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #dddddd;
+            font-size: 14px;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn.delete {
+            background-color: #ff4d4d;
+            color: #ffffff;
+        }
+
+        .btn.delete:hover {
+            background-color: #e63939;
+        }
+
+        .btn.purchase {
+            background-color: #4caf50;
+            color: #ffffff;
+        }
+
+        .btn.purchase:hover {
+            background-color: #45a049;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007aff;
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background-color: #005ecb;
+        }
+    </style>
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Daftar Pembelian</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID USER</th>
+                        <th>NAMA USER</th>
+                        <th>ID BARANG</th>
+                        <th>KATEGORI</th>
+                        <th>TOTAL</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cek : ${cek}">
+                        <td th:text="${cek.login.id}">Id</td>
+                        <td th:text="${cek.login.name}">Name</td>
+                        <td th:text="${cek.product.id}">Id product</td>
+                        <td th:text="${cek.product.kategori}">kategori</td>
+                        <td th:text="${cek.jumlah}">total</td>
+                        <td>
+                            <a th:href="@{/delete-user/{id} (id=${us.id})}"><button class="btn delete">Delete</button></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    
+    </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+   <title>Pembayaran Berhasil</title>
+   <style>
+      /* General Styles */
+      body {
+         font-family: 'Poppins', Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+         background-color: #f0f9ff;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         height: 100vh;
+      }
+
+      .success-container {
+         text-align: center;
+         background: #ffffff;
+         padding: 30px;
+         border-radius: 12px;
+         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+         animation: fadeIn 1s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+         from {
+            opacity: 0;
+            transform: translateY(-20px);
+         }
+         to {
+            opacity: 1;
+            transform: translateY(0);
+         }
+      }
+
+      .success-icon {
+         width: 80px;
+         height: 80px;
+         margin: 0 auto 20px;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         background: #34c759;
+         border-radius: 50%;
+         color: white;
+         font-size: 40px;
+         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .success-title {
+         font-size: 24px;
+         font-weight: bold;
+         color: #2d3748;
+         margin-bottom: 10px;
+      }
+
+      .success-message {
+         font-size: 16px;
+         color: #4a5568;
+         margin-bottom: 20px;
+      }
+
+      .button-container {
+         margin-top: 20px;
+      }
+
+      .success-button {
+         padding: 10px 20px;
+         background: #4a90e2;
+         color: white;
+         border: none;
+         border-radius: 8px;
+         font-size: 16px;
+         font-weight: bold;
+         cursor: pointer;
+         transition: background-color 0.3s, transform 0.2s;
+         text-decoration: none;
+      }
+
+      .success-button:hover {
+         background: #357ab8;
+         transform: scale(1.05);
+      }
+
+      .success-button:active {
+         transform: scale(1);
+      }
+   </style>
+</head>
+
+<body>
+<div class="success-container">
+   
+      <form action="/success" method="get">
+         <input type="hidden" name="productIds" value="1,2,3">
+         <input type="hidden" name="quantity" value="2,3,1">
+     </form>
+      <!-- Icon Success -->
+      <div class="success-icon">
+         ✓
+      </div>
+
+      <!-- Title -->
+      <h1 class="success-title">Pembelian Berhasil!</h1>
+
+      <!-- Message -->
+      <p class="success-message">
+         Terima kasih telah melakukan Pembelian. Pesanan Anda akan segera diproses.
+      </p>
+
+      <!-- Button -->
+      <div class="button-container">
+         <a th:href="@{/menu-user}" class="success-button">Kembali ke Beranda</a>
+      </div>
+   </div>
+
+
+</html>

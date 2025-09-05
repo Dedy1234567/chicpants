@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Checkout - Modern Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --success-color: #10b981;
+            --success-dark: #059669;
+            --danger-color: #ef4444;
+            --danger-dark: #dc2626;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --dark-color: #1f2937;
+            --light-gray: #f8fafc;
+            --medium-gray: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-bg);
+            min-height: 100vh;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin: 2rem auto;
+        }
+
+        .checkout-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        /* Product Styles */
+        .product {
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .product:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+            border: 2px solid white;
+            box-shadow: var(--shadow);
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .product-price {
+            color: var(--success-color);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .quantity-display {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-select, .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Payment Method Styles */
+        .payment-methods {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .payment-option {
+            position: relative;
+        }
+
+        .payment-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .payment-option input[type="radio"]:checked + label {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .payment-icon.saldo { background: var(--success-color); }
+        .payment-icon.cod { background: var(--warning-color); }
+
+        .payment-details h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-details p {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .saldo-info {
+            background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .saldo-info.show {
+            display: block;
+        }
+
+        /* Summary Styles */
+        .summary-card {
+            background: var(--light-gray);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+            background: white;
+            margin: 1rem -1.5rem -1.5rem;
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 0 14px 14px;
+        }
+
+        .price-highlight {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), var(--danger-dark));
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, var(--danger-dark), #b91c1c);
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .checkout-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 800px;
+            }
+            
+            .container {
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .product {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .product-image {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+            
+            .quantity-controls {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-header {
+                padding: 1.5rem 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="checkout-wrapper">
+            <!-- Main Checkout Section -->
+            <div class="checkout-card">
+                <div class="card-header">
+                    <h1>🛒 Checkout</h1>
+                    <p>Review your order and complete your purchase</p>
+                </div>
+
+                <div class="card-body">
+                    <div id="alert-container"></div>
+
+                    <!-- Products Section -->
+                    <div class="section">
+                        <h2 class="section-title">📦 Your Items</h2>
+                        <div class="product" th:each="i : ${checkOut}" th:data-id="${i.product.id}" th:data-price="${i.product.harga}">
+                            <input type="hidden" name="productId" id="productId" th:value="${i.product.id}">
+                            <img th:src="${i.product.gambar}" alt="Product" class="product-image">
+                            <div class="product-details">
+                                <div class="product-name" th:text="${i.product.nameProduct}">Product Name</div>
+                                <div class="product-price" th:text="${'Rp ' + #numbers.formatDecimal(i.product.harga, 0, 'COMMA', 0, 'POINT') + ',00'}">Price</div>
+                                <div class="quantity-controls">
+                                    <button type="button" class="quantity-btn" th:onclick="'updateQuantity(-1, ' + ${i.product.id} + ')'">−</button>
+                                    <span class="quantity-display" th:id="'product' + ${i.product.id} + '-quantity'">1</span>
+                                    <button type="button" class="quantity-btn" th:onclick="'updateQuantity(1, ' + ${i.product.id} + ')'">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Section -->
+                    <div class="section">
+                        <h2 class="section-title">🚚 Shipping Region</h2>
+                        <div class="form-group">
+                            <select id="shipping-method" class="form-select" onchange="updateShipping()">
+                                <option value="10000">Jakarta</option>
+                                <option value="12000">Banten</option>
+                                <option value="15000">Jawa Barat</option>
+                                <option value="18000">Jawa Tengah</option>
+                                <option value="20000">Yogyakarta</option>
+                                <option value="22000">Jawa Timur</option>
+                                <option value="25000">Bali</option>
+                                <option value="27000">Nusa Tenggara Barat</option>
+                                <option value="30000">Nusa Tenggara Timur</option>
+                                <option value="15000">Aceh</option>
+                                <option value="16000">Sumatera Utara</option>
+                                <option value="17000">Sumatera Barat</option>
+                                <option value="18000">Riau</option>
+                                <option value="19000">Kepulauan Riau</option>
+                                <option value="20000">Jambi</option>
+                                <option value="21000">Bengkulu</option>
+                                <option value="22000">Sumatera Selatan</option>
+                                <option value="23000">Kepulauan Bangka Belitung</option>
+                                <option value="24000">Lampung</option>
+                                <option value="25000">Kalimantan Barat</option>
+                                <option value="27000">Kalimantan Tengah</option>
+                                <option value="30000">Kalimantan Selatan</option>
+                                <option value="32000">Kalimantan Timur</option>
+                                <option value="35000">Kalimantan Utara</option>
+                                <option value="20000">Sulawesi Utara</option>
+                                <option value="22000">Gorontalo</option>
+                                <option value="24000">Sulawesi Tengah</option>
+                                <option value="26000">Sulawesi Barat</option>
+                                <option value="28000">Sulawesi Selatan</option>
+                                <option value="30000">Sulawesi Tenggara</option>
+                                <option value="32000">Maluku</option>
+                                <option value="35000">Maluku Utara</option>
+                                <option value="40000">Papua</option>
+                                <option value="42000">Papua Barat</option>
+                                <option value="45000">Papua Selatan</option>
+                                <option value="48000">Papua Tengah</option>
+                                <option value="50000">Papua Pegunungan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div class="section">
+                        <h2 class="section-title">💳 Payment Method</h2>
+                        <div class="payment-methods">
+                            <div class="payment-option">
+                                <input type="radio" id="saldo" name="payment-method" value="saldo" onchange="togglePaymentMethod()">
+                                <label for="saldo">
+                                    <div class="payment-icon saldo">💰</div>
+                                    <div class="payment-details">
+                                        <h4>Pay with Balance</h4>
+                                        <p>Use your account balance for instant payment</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="saldo-info" id="saldo-info">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Available Balance:</span>
+                                    <span id="user-saldo" style="font-weight: 600; font-size: 1.1rem;">Rp 0,00</span>
+                                </div>
+                            </div>
+
+                            <div class="payment-option">
+                                <input type="radio" id="cod" name="payment-method" value="cod" checked onchange="togglePaymentMethod()">
+                                <label for="cod">
+                                    <div class="payment-icon cod">🚚</div>
+                                    <div class="payment-details">
+                                        <h4>Cash on Delivery (COD)</h4>
+                                        <p>Pay when your order is delivered</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="checkout-card">
+                <div class="card-header">
+                    <h2>📊 Order Summary</h2>
+                </div>
+                
+                <div class="card-body">
+                    <div class="summary-card">
+                        <div class="summary-item">
+                            <span>Subtotal:</span>
+                            <span class="price-highlight" id="total-products">Rp 0,00</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Shipping:</span>
+                            <span class="price-highlight" id="total-shipping">Rp 0,00</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Total:</span>
+                            <span id="total-payment">Rp 0,00</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" id="checkout-button" onclick="confirmCheckout()">
+                        <span id="checkout-text">Complete Order</span>
+                        <div id="checkout-loading" class="loading" style="display: none;"></div>
+                    </button>
+                    
+                    <a href="/cancel-checkout" class="btn btn-danger btn-block">Cancel Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let products = {};
+        let shippingCost = 10000;
+        let userSaldo = 0;
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount).replace('IDR', 'Rp');
+        }
+
+        function showAlert(message, type = 'danger') {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+
+        // Initialize products from HTML
+        document.querySelectorAll(".product").forEach((productElement) => {
+            const productId = productElement.getAttribute("data-id");
+            const productPrice = parseInt(productElement.getAttribute("data-price"));
+            products[productId] = { price: productPrice, quantity: 1 };
+        });
+
+        // Load user saldo from backend
+        fetch('/api/user-saldo')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    userSaldo = data.saldo;
+                    document.getElementById('user-saldo').textContent = data.formattedSaldo;
+                } else {
+                    userSaldo = 0;
+                    document.getElementById('user-saldo').textContent = 'Rp 0,00';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading user balance:', error);
+                userSaldo = 0;
+                document.getElementById('user-saldo').textContent = 'Rp 0,00';
+            });
+
+        function togglePaymentMethod() {
+            const saldoRadio = document.getElementById('saldo');
+            const saldoInfo = document.getElementById('saldo-info');
+            
+            if (saldoRadio.checked) {
+                saldoInfo.classList.add('show');
+            } else {
+                saldoInfo.classList.remove('show');
+            }
+        }
+
+        function updateShipping() {
+            const shippingSelect = document.getElementById("shipping-method");
+            shippingCost = parseInt(shippingSelect.value);
+            updateTotal();
+        }
+
+        function updateQuantity(amount, productId) {
+            let product = products[productId];
+            product.quantity = Math.max(1, product.quantity + amount);
+            document.getElementById(`product${productId}-quantity`).textContent = product.quantity;
+            updateTotal();
+        }
+
+        function updateTotal() {
+            const totalProducts = Object.values(products).reduce(
+                (sum, product) => sum + product.price * product.quantity, 0
+            );
+
+            document.getElementById("total-products").textContent = formatCurrency(totalProducts);
+            document.getElementById("total-shipping").textContent = formatCurrency(shippingCost);
+            document.getElementById("total-payment").textContent = formatCurrency(totalProducts + shippingCost);
+        }
+
+        function confirmCheckout() {
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            const totalAmount = Object.values(products).reduce(
+                (sum, product) => sum + product.price * product.quantity, 0
+            ) + shippingCost;
+
+            // Validate saldo payment
+            if (paymentMethod === 'saldo' && totalAmount > userSaldo) {
+                showAlert(`Insufficient balance! You need ${formatCurrency(totalAmount - userSaldo)} more.`, 'danger');
+                return;
+            }
+
+            // Show loading
+            const checkoutBtn = document.getElementById('checkout-button');
+            const checkoutText = document.getElementById('checkout-text');
+            const checkoutLoading = document.getElementById('checkout-loading');
+            
+            checkoutBtn.disabled = true;
+            checkoutText.style.display = 'none';
+            checkoutLoading.style.display = 'inline-block';
+
+            // Prepare data
+            let productData = [];
+            const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
+            hiddenInputs.forEach(input => {
+                productData.push(input.value);
+            });
+
+            const quantities = Object.values(products).map(product => product.quantity);
+            
+            let queryString = productData.map((productId, index) => {
+                return `productId=${productId}&quantity=${quantities[index]}`;
+            }).join("&");
+
+            // Add payment method to query string
+            queryString += `&paymentMethod=${paymentMethod}&totalAmount=${totalAmount}`;
+
+            // Simulate processing time
+            setTimeout(() => {
+                if (paymentMethod === 'saldo') {
+                    showAlert('Order confirmed! Payment deducted from your balance.', 'success');
+                } else {
+                    showAlert('Order confirmed! Please prepare cash for delivery.', 'success');
+                }
+
+                setTimeout(() => {
+                    window.location.href = `/success?${queryString}`;
+                }, 1500);
+            }, 2000);
+        }
+
+        // Initialize
+        updateTotal();
+        togglePaymentMethod();
+    </script>
+</body>
+
+</html>

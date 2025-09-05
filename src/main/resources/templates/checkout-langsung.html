@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+   <title>
+      Menu User
+   </title>
+
+   <style>
+      /* General Styles */
+      body {
+         font-family: 'Poppins', Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+         background-color: #f9fafc;
+         color: #333;
+      }
+
+      .checkout-container {
+         width: 90%;
+         max-width: 600px;
+         margin: 20px auto;
+         background: #ffffff;
+         border-radius: 12px;
+         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+         padding: 20px;
+      }
+
+      .checkout-header {
+         text-align: center;
+         color: #007aff;
+         font-size: 24px;
+         margin-bottom: 20px;
+      }
+
+      .section {
+         margin-bottom: 20px;
+      }
+
+      .section h2 {
+         margin-bottom: 10px;
+         font-size: 20px;
+         color: #4a90e2;
+         border-bottom: 2px solid #d0e6f7;
+         padding-bottom: 5px;
+      }
+
+      /* Produk Section */
+      .product {
+         display: flex;
+         align-items: center;
+         margin-bottom: 15px;
+         background-color: #f0f8ff;
+         padding: 10px;
+         border-radius: 8px;
+         transition: box-shadow 0.3s;
+      }
+
+      .product:hover {
+         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .product-image {
+         width: 90px;
+         height: 90px;
+         object-fit: cover;
+         border-radius: 8px;
+         border: 2px solid #d0e6f7;
+         margin-right: 15px;
+      }
+
+      .product-details {
+         flex: 1;
+      }
+
+      .product-name {
+         font-size: 18px;
+         font-weight: bold;
+         color: #333;
+         margin: 0;
+      }
+
+      .product-price {
+         color: #34a853;
+         font-size: 16px;
+         margin: 5px 0 0;
+      }
+
+      .product-quantity {
+         display: flex;
+         align-items: center;
+      }
+
+      .product-quantity button {
+         background: #34a853;
+         color: white;
+         border: none;
+         padding: 5px 15px;
+         font-size: 16px;
+         font-weight: bold;
+         cursor: pointer;
+         border-radius: 4px;
+         transition: background-color 0.3s;
+      }
+
+      .product-quantity button:hover {
+         background: #2a8a42;
+      }
+
+      .product-quantity span {
+         margin: 0 10px;
+         font-size: 16px;
+         font-weight: bold;
+      }
+
+      /* Select Dropdown */
+      select {
+         width: 100%;
+         padding: 10px;
+         font-size: 14px;
+         border: 1px solid #ddd;
+         border-radius: 6px;
+         background-color: #f7f9fb;
+         color: #333;
+      }
+
+      /* Ringkasan Section */
+      .summary p {
+         margin: 10px 0;
+         font-size: 16px;
+         color: #333;
+      }
+
+      .summary b {
+         color: #d32f2f;
+      }
+
+      /* Button Checkout */
+      .checkout-button {
+         width: 100%;
+         padding: 15px;
+         background: #4a90e2;
+         color: white;
+         border: none;
+         font-size: 16px;
+         font-weight: bold;
+         cursor: pointer;
+         border-radius: 6px;
+         transition: background-color 0.3s;
+      }
+
+      .checkout-button:hover {
+         background: #357ab8;
+      }
+
+      .batal-check-out {
+         width: 100%;
+         padding: 15px;
+         background: #ff284b;
+         color: white;
+         border: none;
+         font-size: 16px;
+         font-weight: bold;
+         cursor: pointer;
+         border-radius: 6px;
+         transition: background-color 0.3s;
+         margin-top: 30px;
+      }
+
+      .batal-check-out:hover{
+         background: #e91b3d;
+      }
+
+      /* Hover Effect */
+      .checkout-container .product:hover {
+         background-color: #e7f3ff;
+      }
+   </style>
+
+
+</head>
+
+<body>
+   <div class="checkout-container">
+      <!-- Header -->
+      <h1 class="checkout-header">Checkout</h1>
+
+      <!-- Section: Daftar Produk -->
+      <div class="section">
+         <h2>Barang Anda</h2>
+         <div class="product" th:each="i : ${checkout}" th:data-id="${i.id}" th:data-price="${i.harga}">
+            <input type="hidden" name="productId" id="productId" th:value="${i.id}">
+            <img th:if="${i.gambar}" th:src="@{/uploads/{img}(img=${i.gambar})}" alt="Produk" class="product-image">            <div class="product-details">
+               <p class="product-name" th:text="${i.nameProduct}">Nama Produk</p>
+               <p class="product-price" id="productPrice" th:text="${'Rp'+ i.harga + ',00'}">Harga Produk</p>
+               <div class="product-quantity">
+                  <button th:onclick="'updateQuantity(-1, ' + ${i.id} + ')'">-</button>
+                  <span th:id="'product' + ${i.id} + '-quantity'">1</span>
+                  <button th:onclick="'updateQuantity(1, ' + ${i.id} + ')'">+</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Section: Pengiriman -->
+      <!-- <div class="section">
+         <h2>Metode Pengiriman</h2>
+         <select id="shipping-method" onchange="updateShipping()">
+            <option value="15000">JNE - Rp 15.000</option>
+            <option value="20000">SiCepat - Rp 20.000</option>
+            <option value="18000">JNT - Rp 18.000</option>
+         </select>
+      </div> -->
+
+      <div class="section">
+         <h2>Wilayah Pengiriman</h2>
+         <select id="shipping-method" onchange="updateShipping()">
+            <option value="10000">Jakarta</option>
+            <option value="12000">Banten</option>
+            <option value="15000">Jawa Barat</option>
+            <option value="18000">Jawa Tengah</option>
+            <option value="20000">Yogyakarta</option>
+            <option value="22000">Jawa Timur</option>
+            <option value="25000">Bali</option>
+            <option value="27000">Nusa Tenggara Barat</option>
+            <option value="30000">Nusa Tenggara Timur</option>
+            <option value="15000">Aceh</option>
+            <option value="16000">Sumatera Utara</option>
+            <option value="17000">Sumatera Barat</option>
+            <option value="18000">Riau</option>
+            <option value="19000">Kepulauan Riau</option>
+            <option value="20000">Jambi</option>
+            <option value="21000">Bengkulu</option>
+            <option value="22000">Sumatera Selatan</option>
+            <option value="23000">Kepulauan Bangka Belitung</option>
+            <option value="24000">Lampung</option>
+            <option value="25000">Kalimantan Barat</option>
+            <option value="27000">Kalimantan Tengah</option>
+            <option value="30000">Kalimantan Selatan</option>
+            <option value="32000">Kalimantan Timur</option>
+            <option value="35000">Kalimantan Utara</option>
+            <option value="20000">Sulawesi Utara</option>
+            <option value="22000">Gorontalo</option>
+            <option value="24000">Sulawesi Tengah</option>
+            <option value="26000">Sulawesi Barat</option>
+            <option value="28000">Sulawesi Selatan</option>
+            <option value="30000">Sulawesi Tenggara</option>
+            <option value="32000">Maluku</option>
+            <option value="35000">Maluku Utara</option>
+            <option value="40000">Papua</option>
+            <option value="42000">Papua Barat</option>
+            <option value="45000">Papua Selatan</option>
+            <option value="48000">Papua Tengah</option>
+            <option value="50000">Papua Pegunungan</option>
+         </select>
+      </div>
+
+
+      <!-- Section: Pembayaran -->
+      <div class="section">
+         <h2>Metode Pembayaran</h2>
+         <select id="payment-method">
+            <option value="COD">Bayar di Tempat (COD)</option>
+         </select>
+      </div>
+
+      <!-- Section: Ringkasan -->
+      <div class="section summary">
+         <h2>Ringkasan</h2>
+         <p>Total Produk: <span id="total-products">Rp 0</span></p>
+         <p>Ongkir: <span id="total-shipping">Rp 0</span></p>
+         <p><b>Total Bayar: <span id="total-payment">Rp 0</span></b></p>
+      </div>
+
+      <!-- Button Checkout -->
+      <button class="checkout-button" id="checkout-button" onclick="confirmCheckout(checkout)">Konfirmasi
+         Pemesanan</button>
+      <button class="batal-check-out" id="batal -check-out"><a th:href="@{/cancel-checkout}" style="text-decoration: none;">Batal</a></button>   
+   </div>
+
+   <script>
+      let products = {}; // Objek untuk menyimpan detail produk (id, harga, kuantitas)
+
+      // Fungsi untuk memformat angka dengan koma setiap tiga digit
+      function formatHarga(harga) {
+         return harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+
+      // Inisialisasi produk secara dinamis dari elemen HTML (dengan Thymeleaf)
+      document.querySelectorAll(".product").forEach((productElement) => {
+         const productId = productElement.getAttribute("data-id");
+         const productPrice = parseInt(productElement.getAttribute("data-price"));
+
+         // Menyimpan data produk ke dalam objek `products`
+         products[productId] = { price: productPrice, quantity: 1 };
+
+         // Format harga sebelum ditampilkan
+         const priceElement = productElement.querySelector(".product-price");
+         priceElement.textContent = `Rp ${formatHarga(productPrice)},00`;
+      });
+
+      let shippingCost = 15000; // Biaya pengiriman default
+
+   //    function updateShipping() {
+   //  // Ambil nilai yang dipilih dari dropdown
+   //  const shippingSelect = document.getElementById("shipping-method");
+   //  shippingCost = shippingSelect.value;
+   //  console.log(shippingCost);
+
+   //  // Update ongkos kirim di UI
+   //  document.getElementById("total-shipping").textContent = shippingCost;
+
+   //  // Update total pembayaran setelah ongkir diperbarui
+   //  updateTotal();
+// }
+
+function updateShipping() {
+    // Ambil nilai yang dipilih dari dropdown
+    const shippingSelect = document.getElementById("shipping-method");
+    shippingCost = parseInt(shippingSelect.value); // Pastikan ongkir dalam bentuk angka
+
+    // Update ongkos kirim di UI
+    document.getElementById("total-shipping").textContent = `Rp ${formatHarga(shippingCost)},00`;
+
+    // Update total pembayaran setelah ongkir diperbarui
+    updateTotal();
+}
+
+
+
+      // Fungsi untuk memperbarui kuantitas produk
+      function updateQuantity(amount, productId) {
+         let product = products[productId];
+         product.quantity = Math.max(1, product.quantity + amount); // Pastikan kuantitas minimal 1
+         document.getElementById(`product${productId}-quantity`).textContent = product.quantity; // Update tampilan kuantitas
+         updateTotal(); // Perbarui total harga di UI
+      }
+
+      // Fungsi untuk memperbarui total harga di UI
+      function updateTotal() {
+         const totalProducts = Object.values(products).reduce(
+            (sum, product) => sum + product.price * product.quantity,
+            0
+         );
+
+         // Update elemen HTML untuk total harga, ongkir, dan total pembayaran
+         document.getElementById("total-products").textContent = `Rp ${formatHarga(totalProducts)},00`;
+         document.getElementById("total-shipping").textContent = `Rp ${formatHarga(shippingCost)},00`;
+         document.getElementById("total-payment").textContent = `Rp ${formatHarga(totalProducts + shippingCost)},00`;
+      }
+
+      // Fungsi untuk mengirim data checkout ke backend
+      function confirmCheckout() {
+         let productData = [];
+         // Ambil hanya data kuantitas dari objek products
+         const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
+         hiddenInputs.forEach(input => {
+            productData.push(input.value);
+         });
+         console.log(productData)
+         const quantities = Object.values(products).map(product => product.quantity);
+
+         // Konversi array kuantitas menjadi query string (format: ?quantity=2&quantity=3...)
+         let queryString = productData.map((productId, index) => {
+            return `productId=${productId}&quantity=${quantities[index]}`;
+         }).join("&");
+
+
+         // Redirect ke endpoint backend dengan query string
+         const url = `/success?${queryString}`;
+         window.location.href = url; // Redirect user ke URL backend
+      }
+
+      // Tambahkan event listener untuk tombol checkout
+      document.getElementById('checkout-button').addEventListener('click', confirmCheckout);
+
+      // Inisialisasi total harga pada saat halaman dimuat
+      updateTotal();
+   </script>
+</body>
+
+</html>

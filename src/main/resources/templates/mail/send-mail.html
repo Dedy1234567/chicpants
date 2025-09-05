@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Informasi Akun</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+    <div style="background-color: #ffffff; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px;">
+        <h2 style="color: #333;">Selamat Datang di Sistem ECOMMERCE</h2>
+        <p>Berikut adalah informasi akun Anda:</p>
+
+        <table style="margin-top: 20px;">
+            <tr>
+                <td style="font-weight: bold;">Username:</td>
+                <td th:text="${username}">[username]</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Password:</td>
+                <td th:text="${password}">[password]</td>
+            </tr>
+        </table>
+
+        <p style="margin-top: 20px;">
+            Silakan gunakan informasi di atas untuk login ke sistem. 
+            <!-- Demi keamanan, disarankan untuk segera mengganti password setelah login pertama kali. -->
+        </p>
+
+        <p>Terima kasih,<br>Tim Chic Pants</p>
+    </div>
+</body>
+</html>
