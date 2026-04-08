@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,20 +33,12 @@ import com.example.demo.Repository.ProductRepository;
 import com.example.demo.Service.HistoryService;
 import com.example.demo.Service.KeranjangService;
 import com.example.demo.Service.ProductService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 
 // Tambahkan import ini di bagian atas AdminController.java
 
-import java.nio.file.Files;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class AdminController {
