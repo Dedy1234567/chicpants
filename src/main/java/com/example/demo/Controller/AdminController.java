@@ -116,7 +116,6 @@ public class AdminController {
     @GetMapping("/manage-product")
     @PreAuthorize("hasRole('ADMIN')")
     public String manageProduct(Model model) {
-        List<Product> products = productRepository.findAll();
         model.addAttribute("products", productRepository.findAll());
         model.addAttribute("product", new Product()); // untuk form tambah
         model.addAttribute("categories", productService.getAllCatagories());
@@ -269,7 +268,6 @@ public class AdminController {
                 }
 
                 String originalFilename = file.getOriginalFilename();
-                String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String uniqueFilename = System.currentTimeMillis() + "_" +
                         originalFilename.replaceAll("[^a-zA-Z0-9.]", "_");
 
